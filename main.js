@@ -89,16 +89,11 @@ function rot(axis_id, layer, angle) {
 // カメラを作成
 const camera = new THREE.PerspectiveCamera(60, width / height);
 camera.position.set(3, 3, 3);
-// camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-const controls = new THREE.OrbitControls(camera, canvas);
-// const controls = new TrackballControls(camera, canvas);
-// 滑らかにカメラコントローラーを制御する
-controls.enableDamping = true;
-controls.dampingFactor = 0.2;
-
-controls.enableZoom = false; // ズームを無効化
-controls.enablePan = false; // パンを無効化
+const controls = new TrackballControls(camera, canvas);
+controls.panSpeed = 0;
+controls.zoomSpeed = 0;
+controls.rotateSpeed = 4;
 
 tick();
 
