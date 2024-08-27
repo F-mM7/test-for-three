@@ -25,25 +25,14 @@ function mat(color) {
 
 function materials(i, j, k) {
   return [
-    i == 1 ? mat(0xff0000) : mat(0x400000), // right
-    i == -1 ? mat(0xff7f00) : mat(0x402000), // left
-    j == 1 ? mat(0xffffff) : mat(0x404040), // up
-    j == -1 ? mat(0xffff00) : mat(0x404000), // down
-    k == 1 ? mat(0x00ff00) : mat(0x004000), // front
-    k == -1 ? mat(0x0000ff) : mat(0x000040), // back
+    i == 1 ? mat(0xff0000) : null, // right
+    i == -1 ? mat(0xff8000) : null, // left
+    j == 1 ? mat(0xffffff) : null, // up
+    j == -1 ? mat(0xffff00) : null, // down
+    k == 1 ? mat(0x00ff00) : null, // front
+    k == -1 ? mat(0x0000ff) : null, // back
   ];
 }
-
-// function materials(i, j, k) {
-//   return [
-//     i == 1 ? mat(0xff0000) : null, // right
-//     i == -1 ? mat(0xff8000) : null, // left
-//     j == 1 ? mat(0xffffff) : null, // up
-//     j == -1 ? mat(0xffff00) : null, // down
-//     k == 1 ? mat(0x00ff00) : null, // front
-//     k == -1 ? mat(0x0000ff) : null, // back
-//   ];
-// }
 
 for (let i = -1; i < 2; ++i)
   for (let j = -1; j < 2; ++j)
@@ -54,14 +43,32 @@ for (let i = -1; i < 2; ++i)
       boxes.push(box);
     }
 
-for (let i = 0; i < 3; ++i) {
+const op = {
+  R: [0, 1, -1],
+  L: [0, -1, 1],
+  U: [1, 1, -1],
+  D: [1, -1, 1],
+  F: [2, 1, -1],
+  B: [2, -1, 1],
+};
+
+for (const name in op) {
   const tr = $("<tr>");
-  for (let l = -1; l < 2; ++l)
-    for (let t = 1; t < 4; ++t) {
-      $("<button>").text("test").on("click", rot.bind(0, i, l, t)).appendTo(tr);
-    }
-  tr.appendTo($("#buttons"));
+  $("<button>")
+    .text(name)
+    .on("click", rot.bind(0, op[name][0], op[name][1], op[name][2]))
+    .appendTo(tr);
+  $("<button>")
+    .text(name + "'")
+    .on("click", rot.bind(0, op[name][0], op[name][1], -op[name][2]))
+    .appendTo(tr);
+  $("<button>")
+    .text(name + "2")
+    .on("click", rot.bind(0, op[name][0], op[name][1], op[name][2] * 2))
+    .appendTo(tr);
+  $("#buttons").append(tr);
 }
+
 const axis_name = ["x", "y", "z"];
 function rot(axis_id, layer, angle) {
   const axis = new THREE.Vector3();
@@ -85,9 +92,13 @@ camera.position.set(3, 3, 3);
 // camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const controls = new THREE.OrbitControls(camera, canvas);
+// const controls = new TrackballControls(camera, canvas);
 // 滑らかにカメラコントローラーを制御する
 controls.enableDamping = true;
 controls.dampingFactor = 0.2;
+
+controls.enableZoom = false; // ズームを無効化
+controls.enablePan = false; // パンを無効化
 
 tick();
 
