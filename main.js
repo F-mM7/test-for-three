@@ -1,6 +1,7 @@
 // サイズを指定
-const width = 600;
-const height = 600;
+const size = Math.min(window.innerWidth, window.innerHeight) * 0.7;
+const width = size;
+const height = size;
 
 // レンダラーを作成
 const renderer = new THREE.WebGLRenderer({
